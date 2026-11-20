@@ -5,7 +5,7 @@ const router = express.Router();
 const Feedback = require("../models/Feedback");
 
 // ==================================
-// POST API - Save feedback to MongoDB
+// POST API - Create feedback
 // ==================================
 
 router.post("/", async (req, res) => {
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
 
 
 // ==================================
-// GET API - Retrieve feedback
+// GET API - Read all feedback
 // ==================================
 
 router.get("/", async (req, res) => {
@@ -67,7 +67,7 @@ router.get("/", async (req, res) => {
 
 
 // ==================================
-// PUT API - Update existing feedback
+// PUT API - Update feedback
 // ==================================
 
 router.put("/:id", async (req, res) => {
@@ -101,6 +101,38 @@ router.put("/:id", async (req, res) => {
 });
 
 
+// ==================================
+// DELETE API - Delete feedback
+// ==================================
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedFeedback = await Feedback.findByIdAndDelete(
+      req.params.id
+    );
+
+    if (!deletedFeedback) {
+      return res.status(404).json({
+        message: "Feedback not found"
+      });
+    }
+
+    res.status(200).json({
+      message: "Feedback deleted successfully!",
+      data: deletedFeedback
+    });
+
+  } catch (error) {
+    res.status(400).json({
+      message: "Failed to delete feedback",
+      error: error.message
+    });
+  }
+});
+
+
+// ==================================
 // Export router
+// ==================================
 
 module.exports = router;
